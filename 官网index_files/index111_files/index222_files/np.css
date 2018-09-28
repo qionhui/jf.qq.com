@@ -1,0 +1,21 @@
+.np-title{display:none; }
+.np-index-link{display:none; }
+.np-person-info{background:#1F2026}
+
+.np-btngroup .np-active, .np-btngroup .np-active:hover, .np-reply-box-active, .np-nav-tab .np-active, .np-nav-tab .np-active:hover{border-color:#D6D6D9;}
+.np-frame .np-user{color:#333443;font-weight:bold;font-family:\5FAE\8F6F\96C5\9ED1;font-size: 14px }
+#commentArea .np-user{font-weight:normal;font-size:12px}
+.np-frame a.np-user:hover{color:#FF3052;}
+
+.np-btn-submit, .np-btn-newreply, .np-tip-num, .np-tip-postnum, .np-tip-newpost, .np-btngroup .np-active{background-color:#FD5737;}
+.np-btn-submit:hover, .np-tip-postnum:hover, .np-btn-close:hover, .np-btn-submit-loading, .np-btn-submit-loading:hover, .np-btn-close:hover, .np-tip-postnum-loading, .np-tip-postnum-loading:hover, .np-frame .np-btn-newreply:hover,.np-btngroup .np-active:hover{background-color:#E55031;}
+.np-btngroup a:hover{background-color:#fff;}
+
+.np-frame .np-person-info-weak, .np-btn-report, .np-btngroup a{background:none}
+.np-timeline li{background-color:#f9f9f9;}
+
+#linshi,.np-btn-area{display:none !important; }
+.np-popframe .np-person-info .np-btn-reply,.np-popframe .np-person-info .np-btn-upvote{background:url('http://speedtest.qq.com/web201503/img/np/icons1.png') no-repeat}
+.np-popframe .np-person-info .np-btn-upvote{background-position:-64px -4px;}
+.np-popframe .np-person-info .np-btn-reply{background-position:-64px -23px;}
+

@@ -1,0 +1,98 @@
+/*var customData  = {
+	num : 1 ,    //按钮数量（最多两个）
+	href: ['http://jf.qq.com/act/a20151104anniversary/index.html','http://jf.qq.com/act/a20151120newrole/index.html'] ,  //按鈕的鏈接 
+	text:"",                      //第二個按鈕的文字，第一個按鈕默認常顯示，所以不需要再動態填一個
+	width: ['120px','120px'] ,   //按钮宽度（按钮数量为1时填一个值，数量为2时两个值）
+	height: ['30px','30px'] ,    //按鈕高度
+	top: ['319px','319px'] ,     //按鈕定位的top值
+	left: ['194px','316px']      //按鈕定位的left值
+}*/
+var page = document.getElementsByTagName('body')[0];
+var id = page.id;
+
+var customData  = {
+	num : 1 ,    //按钮数量（最多两个）
+	href: ['http://jf.qq.com/cp/a20160623trzz/index.htm','http://jf.qq.com/cp/a20160623trzz/index.htm'] , 
+	text:['按钮0','按钮1'],
+	width: ['219px','120px'] ,   //按钮宽度（按钮数量为1时填一个值，数量为2时两个值）
+	indexWidth : ['133px','133px'],
+	height: ['55px','30px'] ,
+	indexHeight : ['32px','32px'],
+	top: ['500px','319px'] ,
+	indexTop : ['346px','346px'],
+	left: ['399px','316px'],
+	indexLeft:['174px','307px']
+}
+
+var btnSet = function (o) {
+	this.num = o.num,
+	this.text = o.text,
+	this.href = o.href,
+	this.width = o.width,
+	this.indexWidth = o.indexWidth,
+	this.height = o.height,
+	this.indexHeight = o.indexHeight,
+	this.top = o.top,
+	this.indexTop = o.indexTop,
+	this.left = o.left;
+	this.indexLeft = o.indexLeft;
+	this.init();
+}
+
+btnSet.prototype = {
+	init:function(){
+		var _this = this;
+		if(id=='main'||id==''){
+			_this.btnAttr();
+		}else if(id=='index'){
+			_this.indexBtn();
+		}
+		
+	},
+	btnAttr:function(){
+		var ckxq = document.getElementById('ckxq');
+		var btns = ckxq.getElementsByTagName('a');
+		if(this.num==2){
+			var btn2 = document.createElement("a");
+			btn2.href = this.href[1];
+			btn2.className = 'btn2';
+			var text = document.createTextNode(this.text[1]);
+			btn2.appendChild(text);
+			btn2.setAttribute('target',"_blank");
+			btn2.setAttribute('onClick',"pgvSendClick({hottag:'main.link.newrole'})");
+			ckxq.appendChild(btn2);
+		}
+		for (var i = 0; i < this.num; i++) {
+			btns[i].href = this.href[i];
+			btns[i].style.width = this.width[i];
+			btns[i].style.height = this.height[i];
+			btns[i].style.top = this.top[i];
+			btns[i].style.left = this.left[i];
+		}
+	},
+	indexBtn : function(){
+		var parent = document.getElementById('versionBtns');
+		var insetBtn = [];
+		for (var i = 0; i < this.num; i++) {
+			insetBtn[i] = document.createElement("a");
+			insetBtn[i].href = this.href[i];
+			insetBtn[i].className = "btn"+i+" hide";
+			var text = document.createTextNode(this.text[i]);
+			insetBtn[i].appendChild(text);
+			insetBtn[i].setAttribute('target',"_blank");
+			insetBtn[i].setAttribute('onClick',"pgvSendClick({hottag:'index.link.version"+i+"'})");
+			parent.appendChild(insetBtn[i]);
+		};
+
+		var btns = parent.getElementsByTagName('a');
+		for (var i = 0; i < btns.length; i++) {
+			btns[i].href = this.href[i];
+			btns[i].style.width = this.indexWidth[i];
+			btns[i].style.height = this.indexHeight[i];
+			btns[i].style.top = this.indexTop[i];
+			btns[i].style.left = this.indexLeft[i];
+		};
+	}
+}
+
+new btnSet(customData);/*  |xGv00|6b74ef86c1b837c778c7d208220bbade */

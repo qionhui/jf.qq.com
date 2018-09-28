@@ -1,0 +1,130 @@
+/*
+ *
+ customData = {
+ dType : 弹出类型（0-下线；1-弹出视频；2-弹出图片；3-弹出纯文本）
+ dVid : 腾讯视频ID
+ dImg : 弹出背景图
+ dLink : 弹出跳转地址
+ dTxt : 纯文本内容
+ dCookies : 弹出层时间控制，单位：小时
+ }
+ *
+ */
+
+var customData = {
+    dType : "0",
+    dVid : "l0016qmect6",
+    dImg : "http://ossweb-img.qq.com/images/jf/web201504/pop/popup-img20151204.png",
+    dLink : "http://jf.qq.com/webplat/info/news_version3/2075/2091/5019/m3489/201604/448806.shtml",
+    dTxt : '策划QT在线访谈，今晚7点正式开启，不可错过！',
+    dCookies : ""
+}
+
+var customDialog = {
+    setCookies:function(cusHours,cookieName,value){
+        var exp  = new Date();    //new Date("December 31, 9998");
+        exp.setTime(exp.getTime() + cusHours*60*1000);
+        document.cookie = cookieName + "="+ value + ";expires=" + exp.toGMTString();
+    },
+    getCookies:function(cookieName)//取cookies函数
+    {
+        var arr = document.cookie.match(new RegExp("(^| )"+cookieName+"=([^;]*)(;|$)"));
+        if(arr != null) return unescape(arr[2]); return null;
+    },
+    delCookies:function(cookieName){
+        var exp = new Date();
+        exp.setTime(exp.getTime() - 1);
+        var cval=customDialog.getCookies(cookieName);
+        if(cval!=null) document.cookie= cookieName + "="+cval+";expires="+exp.toGMTString();
+    },
+    sPop:function(o, opt) {
+        need("biz.dialog", function(Dialog) {
+            Dialog.show({
+                id: o,
+                onPopupCallback: function() {
+                    opt && opt.onpop && opt.onpop();
+                },
+                onCloseCallback: function() {
+                    opt && opt.onclose && opt.onclose();
+                }
+            });
+        });
+    },
+    cPop:function() {
+        need("biz.dialog", function(Dialog) {
+            Dialog.hide();
+        });
+    }
+}
+
+var customPop = document.createElement("div");
+customPop.id="customPop";
+var customBody = document.getElementsByTagName("body")[0];
+
+function showCustomPop(){
+    if(customData.dType=="0"){customDialog.delCookies("isPop");return}
+    if(customDialog.getCookies("isPop")==null){
+        if(customData.dCookies.length>=1){
+            customDialog.setCookies(customData.dCookies,"isPop",1);
+        }
+    }else{
+        return;
+    }
+    switch (customData.dType){
+        case "0":
+            break;
+        case "1":
+            if(customData.dVid.length<=1){
+                break;
+            }
+            customPop.className="customPop customPop-1";
+            customPop.innerHTML = '<div class="customPop-close" onclick="customDialog.cPop()">&times;</div><div class="customPop_player" id="customPop_Video"></div>'
+            customBody.appendChild(customPop);
+            need('biz.tvp-min',function(tvp){
+                var vId = customData.dVid; // 视频id
+                tvp.play(vId, 'customPop_Video',{'width':800,'height':450,'miniskin':1}); // 用默认配置创建播放器
+            });
+
+            customDialog.sPop(customPop,{
+                onclose:function(){
+                    customPop.parentNode.removeChild(customPop);
+                    pgvSendClick({hottag:'main.customPop.btn.close-1'})
+                }
+            });
+            break;
+        case "2":
+            if(customData.dImg.length<=1){
+                break;
+            }
+            customPop.className="customPop customPop-2";
+            var popCtnHtml = '<img src="'+customData.dImg+'"/>';
+            if(customData.dLink.length>1){
+                popCtnHtml = '<a href="'+customData.dLink+'" target="_blank">'+popCtnHtml+'</a>'
+            }
+            customPop.innerHTML = '<div class="customPop-close" onclick="customDialog.cPop()">&times;</div><div class="customPop_layer">'+popCtnHtml+'</div>'
+            customBody.appendChild(customPop);
+            customDialog.sPop(customPop,{
+                onclose:function(){
+                    customPop.parentNode.removeChild(customPop);
+                    pgvSendClick({hottag:'main.customPop.btn.close-2'})
+                }
+            });
+            break;
+        case "3":
+            customPop.className="customPop customPop-3";
+            var popCtnHtml = customData.dTxt;
+            if(popCtnHtml.length<=1){
+                break;
+            }
+            customPop.innerHTML = '<div class="customPop-close" onclick="customDialog.cPop()">&times;</div><div class="customPop_layer">'+popCtnHtml+'</div>'
+            customBody.appendChild(customPop);
+            customDialog.sPop(customPop,{
+                onclose:function(){
+                    customPop.parentNode.removeChild(customPop);
+                    pgvSendClick({hottag:'main.customPop.btn.close-3'})
+                }
+            });
+            break;
+    }
+}
+showCustomPop();/*  |xGv00|386894f9966debc42229741e6e4fbb8a */
