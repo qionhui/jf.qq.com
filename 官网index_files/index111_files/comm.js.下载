@@ -1,0 +1,138 @@
+//切换
+function doSwitch(A,B,C){
+	$(A).each(function(i){
+		$(this).click(function(){
+			$(this).addClass("on").siblings().removeClass("on");
+			$(B).removeClass(C);
+			$(B).eq(i).addClass(C);
+		})
+	})
+}
+
+//二维码
+doSwitch('.slide-wx a','.slide-qrcode img','on');
+
+//合作平台
+$(".btn-select,.lst-select").mouseover(function(){
+	$(".lst-select").show();
+})
+$(".btn-select,.lst-select").mouseleave(function(){
+	$(".lst-select").hide();
+})
+$(".lst-select a").click(function(){
+	$(".lst-select").hide();
+});
+
+//下拉选择
+function lstInit(){
+	$(".slide-event").each(function(i){
+		E = ".slide-event:eq";
+		$(E+"("+i+")").find(".btn-event,.lst-event").mouseover(function(){
+			$(E+"("+i+")").find(".lst-event").show();
+		})
+		$(E+"("+i+")").find(".btn-event,.lst-event").mouseleave(function(){
+			$(E+"("+i+")").find(".lst-event").hide();
+		})
+		$(E+"("+i+")").find(".lst-event a").click(function(){
+			$(E+"("+i+")").find(".btn-event span").text($(this).text());
+			$(E+"("+i+")").find(".lst-event").hide();
+		});
+	})
+}
+
+//弹窗
+function TGDialogS(e){
+	need("biz.dialog-min",function(Dialog){
+		Dialog.show({
+			id:e,
+			bgcolor:'#000', //弹出“遮罩”的颜色，格式为"#FF6600"，可修改，默认为"#fff"
+			opacity:50      //弹出“遮罩”的透明度，格式为｛10-100｝，可选
+		});
+	});
+}
+function closeDialog(){
+	need("biz.dialog-min",function(Dialog){
+		Dialog.hide();
+	});
+}
+
+//登录
+milo.addEvent(g("dologin"), "click", function() {
+	need("biz.login-min",function(LoginManager){
+		LoginManager.init({
+			needReloadPage:true
+		});
+		LoginManager.login();
+	});
+	return false;
+});
+milo.addEvent(g("dologout"), "click", function() {
+	need("biz.login-min",function(LoginManager){
+		LoginManager.logout();
+	});
+	return false;
+});
+milo.ready(function() {
+	need("biz.login-min",function(LoginManager){
+		LoginManager.checkLogin(function(){
+			//pgvSendClick({hottag:'main2016.qquser.login'})
+			//g("login_qq_span").innerHTML = LoginManager.getUserUin();//获取QQ号
+		});
+	});
+});
+
+$('.btn-favorite').click(function(){
+	var iInfoId = parseInt($(this).attr('data-iInfoId'));
+	if( iInfoId<0 ){
+		alert('文章id出错，抱歉不能收藏！');
+		return false;
+	}
+	$.ajax({
+		url: 'http://apps.game.qq.com/actions_echo/jf_20160531015/correct_news.php?Action=Correct',
+		type: "GET",
+		dataType: 'script',
+		data: {
+			iInfoId: iInfoId,
+			//iTypeId: iTypeId,
+			_: Math.ceil(+(new Date) / 5000)
+		},
+		success: function(res) {
+			showDialog.hide();
+			if (window.CorrectNews === null || typeof(window.CorrectNews) == 'undefined') {
+				alert('收藏失败，请稍后再试哦~~');
+				return false;
+			}
+			var iRet = parseInt(window.CorrectNews.iRet, 10);
+
+			if (iRet >= 0 && typeof(window.CorrectNews.sMsg) != 'undefined') {
+				alert(window.CorrectNews.sMsg);
+				return false;
+			}
+			alert('收藏失败，请稍后再试哦~~');
+			return false;
+		}
+	});	
+})
+
+function loadjs(url){var obj=document.createElement("script");obj.setAttribute("src",url);document.body.appendChild(obj);return obj;}
+function delay_js(url,succ,v){var elem=loadjs(url);if(!succ)succ=function(){};if((navigator.userAgent.indexOf('MSIE')==-1)?false:true){elem.onreadystatechange=function(){if(this.readyState&&this.readyState=="loading") return;else succ(v);};}else elem.onload=function(){succ(v);};elem.onerror=function(){};};
+
+//统计
+milo.addEvent(window,'load',function(){
+	loadScript("http://ossweb-img.qq.com/images/js/title.js",function(){ostb_int()},"");
+	
+  var tcss=function (){
+		delay_js('http://tajs.qq.com/stats?sId=22425660',function(){
+			delay_js('http://pingjs.qq.com/ping_tcss_ied.js',function(){
+				if(typeof(pgvMain)=='function') pgvMain();
+			})
+		})
+  }
+  tcss()
+	//loadScript("http://pingjs.qq.com/ping_tcss_ied.js",function(){if(typeof(pgvMain) == 'function')pgvMain();});
+
+	loadjs("http://game.gtimg.cn/images/jf/web201605/js/popup.js");
+	loadjs("http://game.gtimg.cn/images/jf/web201605/js/topBg.js",function () {
+		console.log('test');
+	});
+});

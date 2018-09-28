@@ -1,0 +1,104 @@
+//轮播切换
+doSwitch('.part-banner .banner-tag a','.part-banner .banner-box','curr');
+
+//轮播
+var bi = new Array,
+	bl = new Array,
+	bt = new Array;
+$(".banner-box").each(function(i){
+	bi[i] = 0;
+	bl[i] = $(".banner-box:eq("+i+") .banner a").length-1;
+	for(var x=0;x<=bl[i];x++){
+		$(".banner-box:eq("+i+") .dot").append('<a>');
+	}
+	$(this).mousemove(function(){
+		clearTimeout(bt[i]);
+	})
+	$(this).mouseleave(function(){
+		bannerShow(i);
+	})
+	$(this).find(".dot a").each(function(i2){
+		$(this).mouseover(function(){
+			bi[i] = i2;
+			$(this).addClass("on").siblings().removeClass("on");
+			$(".banner-box:eq("+i+") .banner a").eq(i2).show().siblings().hide();
+		})
+	})
+	$(this).find(".dot a").eq(0).mouseover();
+})
+function bannerShow(i){
+	bt[i] = setTimeout(function(){
+		bi[i]>=bl[i]?bi[i]=0:bi[i]++;
+		$(".banner-box:eq("+i+") .dot a").eq(bi[i]).addClass("on").siblings().removeClass("on");
+		$(".banner-box:eq("+i+") .banner a").eq(bi[i]).fadeIn().siblings().fadeOut();
+		bannerShow(i);
+	},4000)
+}
+bannerShow(0);
+bannerShow(1);
+
+//新闻
+doSwitch('.part-news .part-nav a','.part-news .ul-news','curr');
+$(".ul-news li").each(function(i){
+	$(this).mouseover(function(){
+		$(this).addClass("on");
+	})
+	$(this).mouseleave(function(){
+		$(this).removeClass("on");
+	})
+})
+
+//活动
+doSwitch('.part-event .part-nav a','.part-event .event','curr');
+
+//情报
+doSwitch('.part-info .part-nav a','.part-info .link-info','curr');
+
+//职业
+$(".part-act .act-nav a").each(function(i){
+	$(this).click(function(){
+			$(this).addClass("on").siblings().removeClass("on");
+			$(".part-act .act-box").removeClass("on");
+			$(".part-act .act-box").eq(i).addClass("on");
+	})
+})
+$(".part-act .act-box").each(function(i){
+	$(this).find(".nav a").each(function(i2){
+		$(this).mouseover(function(){
+			$(this).addClass("on").siblings().removeClass("on");
+			$(".part-act .act-box:eq("+i+") .con").removeClass("on");
+			$(".part-act .act-box:eq("+i+") .con").eq(i2).addClass("on");
+		})
+	})
+})
+
+//疾风圈
+doSwitch('.part-community .act-nav a','.part-community .ul-players','on');
+
+//攻略
+doSwitch('.part-walk .part-nav a','.part-walk .ul-walk','curr');
+$(".ul-walk li").each(function(i){
+	$(this).mouseover(function(){
+		$(this).addClass("on");
+	})
+	$(this).mouseleave(function(){
+		$(this).removeClass("on");
+	})
+})
+
+//TOP
+var sTop;
+$(window).scroll(function(){
+	sTop = $(window).scrollTop();
+	if(sTop > 300){
+		$(".btn-top").show();
+	}else{
+		$(".btn-top").hide();
+	}
+})
+
+//滚动
+function scrollTo(n,s){
+	$("html,body").stop(true).animate({scrollTop:(n ? (isNaN(n)?$(n).offset().top:n) : 0)},s)
+	//killyesterday
+}

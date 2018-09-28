@@ -1,0 +1,268 @@
+function gEl(e){return (typeof(e) == "object") ? e : document.getElementById(e)}
+//load
+function loadjs(url){var obj=document.createElement("script");obj.setAttribute("src",url);document.body.appendChild(obj);return obj;}
+function delay_js(url,succ,v){var elem=loadjs(url);if(!succ)succ=function(){};if((navigator.userAgent.indexOf('MSIE')==-1)?false:true){elem.onreadystatechange=function(){if(this.readyState&&this.readyState=="loading") return;else succ(v);};}else elem.onload=function(){succ(v);};elem.onerror=function(){};};
+function addload(func){var old=window.onload;if(typeof window.onload!="function"){window.onload=func;}else{window.onload=function(){old();func();}}};
+
+var JF={
+	init: function () {
+		var _this=this;
+		_this.adSet(JF.slide);
+		_this.version(JF.versionSlide);
+		_this.video();
+		_this.tcss();
+		_this.player()
+	},
+	tcss : function(){
+		delay_js('http://tajs.qq.com/stats?sId=22425660',function(){
+			delay_js('http://pingjs.qq.com/ping_tcss_ied.js',function(){
+				if(typeof(pgvMain)=='function') pgvMain();
+			})
+		})
+	},
+	adSet: function(callback){
+		$.getScript("http://game.qq.com/time/qqadv/Info_new_15133.js",function(){
+			var times =[],
+				tts =[],
+				intro =[],
+				intros =[],
+				links =[],
+				images =[],
+				arr=[];
+			var parent = $('.link-today')[0];
+
+			for (var i in oDaTaNew15133) {
+			 	if(oDaTaNew15133[i][5]==20160513){
+			 		intros.push(unescape(decodeURI(oDaTaNew15133[i][9])).split("##"));
+			 		tts.push(decodeURI(oDaTaNew15133[i][0]))
+			 		images.push(oDaTaNew15133[i][2])
+                	links.push(oDaTaNew15133[i][1])
+			 	}
+			}
+
+			var len =images.length;
+			for(var i=0;i<len;i++){
+				times.push(intros[i][0])
+				intro.push(intros[i][1])
+
+				arr[i] = document.createElement('a');
+				arr[i].setAttribute('href',links[i]);
+				arr[i].setAttribute('target','_blank');
+				arr[i].setAttribute('onclick',"pgvSendClick({hottag:'main2016.maincon.activity.slide"+i+"'})")
+
+				var html='';
+					html +='<p class="t-txt">时间：'+times[i]+'<br />活动：<em>'+tts[i]+'</em>('+intro[i]+')</p>';
+					html +='<p class="t-pic"><img src="http://ossweb-img.qq.com/upload/adw/'+images[i]+'" /><i></i></p>';
+
+				arr[i].innerHTML =html;
+				parent.appendChild(arr[i]);
+			}
+			if (callback && typeof(callback) === "function") { 
+		        callback(); 
+		    } 
+		})
+	},
+	slide :function(){
+		var ti = 0,
+			tw = $(".today .link-today a").width(),
+			tl = $(".today .link-today a").length-1,
+			tt;
+		function todayShow(){
+			tt = setTimeout(function(){
+				$(".today .next").click();
+				todayShow();
+			},4000)
+		}
+		todayShow();
+		$(".today").mousemove(function(){
+			clearTimeout(tt);
+		})
+		$(".today").mouseleave(function(){
+			todayShow();
+		})
+		$(".today .prev").click(function(){
+			ti<=0?ti=tl:ti--;
+			tGo();
+		})
+		$(".today .next").click(function(){
+			ti>=tl?ti=0:ti++;
+			tGo();
+		})
+		function tGo(){
+			$(".today .link-today").stop(false,false).animate({
+				'left': 0-ti*tw+'px'
+			});
+		}
+	},
+	version : function(callback){
+		$.getScript("http://game.qq.com/time/qqadv/Info_new_15133.js",function(){
+			var vTts= [],   //jf version
+				vIntros =[],
+				intros =[],
+				vImages =[],
+				vLinks =[],
+				vTimes =[],
+				arr =[];
+
+			var parent = $('.ul-ver')[0];
+
+			for (var i in oDaTaNew15133) {
+			 	if(oDaTaNew15133[i][5]==20160516){
+			 		intros.push(unescape(decodeURI(oDaTaNew15133[i][9])).split("##"));
+			 		vTts.push(decodeURI(oDaTaNew15133[i][0]))
+			 		vImages.push(oDaTaNew15133[i][2])
+                	vLinks.push(oDaTaNew15133[i][1])
+			 	}
+			}
+
+			var len =vImages.length;
+
+			for (var i=0;i<len;i++) {
+			 	vTimes.push(intros[i][0])
+				vIntros.push(intros[i][1])
+
+				arr[i]=document.createElement('li');
+				if(i==0){
+					arr[i].className='li1';
+				}
+				var html ='';
+					html +='<a href="'+vLinks[i]+'" target="_blank" onclick="pgvSendClick({hottag:\'main2016.maincon.version.slide'+i+'\'});">';
+					html +='<img src="http://ossweb-img.qq.com/upload/adw/'+vImages[i]+'" />';
+					html +='<i></i>';
+					html +='<p><em>'+vTts[i]+'</em>'+vIntros[i]+'<br />'+vTimes[i]+'</p>';
+					html +='</a>';
+					html +='<span></span>';
+				arr[i].innerHTML =html;
+				parent.appendChild(arr[i]);
+			}
+
+			if (callback && typeof(callback) === "function") { 
+		        callback(); 
+		    }
+		})
+	},
+	versionSlide : function(){
+		//版本
+		var vw = $(".ver-box .ul-ver li").width(),
+			vl = $(".ver-box .ul-ver li").length-5,
+			vi = vl;
+		vFix();
+		$(".ver-box .prev").click(function(){
+			vi<=0?vi=0:vi--;
+			vGo();
+		})
+		$(".ver-box .next").click(function(){
+			vi>=vl?vi=vl:vi++;
+			vGo();
+		})
+		function vGo(){
+			$(".ver-box .ul-ver").stop(false,false).animate({
+				'left': 0-vi*vw+'px'
+			},function(){
+				$(".ver-box .ul-ver li").eq(vi).addClass("fix").siblings().removeClass("fix");
+			});
+		}
+		function vFix(){
+			$(".ver-box .ul-ver").css({
+				'left': 0-vi*vw+'px'
+			})
+			$(".ver-box .ul-ver li").eq(vi).addClass("fix").siblings().removeClass("fix");
+		}
+	},
+	player: function () {
+			var jfLinks= [],  
+				jfImages = [],
+				jfTts = [],
+				jfNt = [],
+				jfNim = [],
+				jfNl = [];
+			var parent = $($('.ul-players')[0]);
+
+			var dataPush = function (index) {
+				var iDataFun = function () {
+					for (var i=0;i<iShowRank.list.length;i++) {
+						if(iShowRank.list[i].iTypeId==index+1){
+							jfTts[i] = iShowRank.list[i].sProdName
+							jfImages[i] = iShowRank.list[i].sThumbURL
+							jfLinks[i] = 'http://jf.qq.com/act/a20150924jfcircle/detail.shtml?id='+iShowRank.list[i].iProdId
+						}
+					}
+
+					var tpl ='';
+					for(var i=0;i<2;i++){
+						tpl +='<li><a href="'+jfLinks[i+2*index]+'" target="_blank" onclick="pgvSendClick({hottag:\'main2016.maincon.jfcircle'+index+'.slide'+i+'\'});"><img src="'+jfImages[i+2*index]+'">'+jfTts[i+2*index]+'</a></li>';
+					}
+					parent.html(tpl)
+				}
+				if(index<2){
+					delay_js('http://apps.game.qq.com/jf/a20150924jfcircle/ishow_get_rank.php',iDataFun)	
+				}else if(index>=2){
+					delay_js('http://game.qq.com/time/qqadv/Info_new_15133.js',function () {
+						for (var i in oDaTaNew15133) {
+						 	if(oDaTaNew15133[i][5]==20160520){
+						 		if(jfNt.indexOf(decodeURI(oDaTaNew15133[i][0]))==-1){jfNt.push(decodeURI(oDaTaNew15133[i][0]))}
+						 		if(jfNim.indexOf(oDaTaNew15133[i][2])==-1){jfNim.push(oDaTaNew15133[i][2])}
+			                	if(jfNl.indexOf(oDaTaNew15133[i][1])==-1){jfNl.push(oDaTaNew15133[i][1])}
+						 	}
+						}
+						
+						var tpl ='';
+						for(var i=0;i<2;i++){
+							tpl +='<li><a href="'+jfNl[i+2*(index-2)]+'" target="_blank" onclick="pgvSendClick({hottag:\'main2016.maincon.jfcircle'+index+'.slide'+i+'\'});"><img src="http://ossweb-img.qq.com/upload/adw/'+jfNim[i+2*(index-2)]+'">'+jfNt[i+2*(index-2)]+'</a></li>';
+						}
+						parent.html(tpl)
+					})
+				}
+			}
+
+		dataPush(0)
+
+		$('.part-community .act-nav a').click(function(){
+			$(this).addClass('on').siblings().removeClass("on")
+			dataPush($(this).index())
+		})
+	},
+	video : function(){
+		var videoId =[56,59,60,58],
+			html = '',
+			videoPath = 'http://jf.qq.com/act/a20151012video/detail.shtml?G_Biz=15&tid=',
+			parent = $('.link-video');
+			parent.html('<a ><span class="lazy_tips">载入中...</span></a>');
+
+		$.getScript('http://ams.qq.com/wmp/sys/v2.0/js/wmpCommon_v2.js',function(){
+          	G_biz = 15;
+          	inset('',0)
+
+        });
+
+		var tpl = function (o){
+		    html +='<a href="'+videoPath + o.iVideoId+'" target="_blank"><img src="'+o.sIMG+'" width="169" height="112" /><i></i>'+o.sTitle+'</a>'
+		};
+
+		function inset(o,num){
+            html = '';
+            if(num === 0){
+              	QueryTypeList(function(data){
+                 	for (var i = 0; i < 3; i++) {
+                    	tpl(data['newlist56'][i]);
+                 	};
+                 	parent.html(html)  
+              	});         
+            }else{
+              	QueryTypeList(function(data){
+                 	for (var i = 0; i < 3; i++) {
+                    	tpl(data['videolist'+o][i]);
+                	};
+                	parent.html(html)         
+              	})
+            }  
+        }
+
+        $('#videoNav a').click(function(){
+	        $(this).addClass('on').siblings().removeClass('on');
+	        inset(videoId[$(this).index()],$(this).index());
+        })
+	}	
+}
+
+JF.init();
